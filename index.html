@@ -329,7 +329,36 @@ button:hover {
 #vibeResult {
   margin-top: 1rem;
 }
+#creditTag {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
+  font-size: 0.75rem;
+  color: #666;
+  opacity: 0.4;
+  z-index: 9999;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
 
+#creditTag a {
+  color: inherit;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+#creditTag .sparkle {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#creditTag:hover {
+  opacity: 0.7;
+}
+
+#creditTag:hover .sparkle {
+  opacity: 1;
+}
   </style>
 
   
@@ -347,7 +376,8 @@ button:hover {
     <p id="vibeResult"></p>
   </div>
 </div>
-
+<div id="creditTag">Built with 💜 by <a href="https://github.com/Murphy-Lj09" target="_blank">Murphy</a><span class="sparkle"> ✨</span>
+</div> 
 
 <!-- Mood Overlays -->
 <div id="lovePage" class="moodPage hidden">
@@ -445,6 +475,8 @@ const moodKeywords = {
   "affection": "lovePage",
   "heart": "lovePage",
   "kiss": "lovePage",
+  "enchanted": "lovePage",
+  "lover": "lovePage",
 
   // sad
   "heartbreak": "sadPage",
@@ -461,6 +493,9 @@ const moodKeywords = {
   "hype": "hypePage",
   "banger": "hypePage",
   "turn up": "hypePage",
+  "levitating": "hypePage",
+  "uptown funk": "hypePage",
+  "shake it off": "hypePage",
 
   // chill
   "chill": "chillPage",
@@ -478,6 +513,7 @@ const moodKeywords = {
   "retro": "nostalgiaPage",
   "flashback": "nostalgiaPage",
   "someone like you": "nostalgiaPage",
+  "as it was": "nostalgiaPage",
 
   // confident
   "boss": "confidentPage",
@@ -513,7 +549,9 @@ const moodKeywords = {
   "lonely": "lonelyPage",
   "alone": "lonelyPage",
   "solitude": "lonelyPage",
-  "nobody": "lonelyPage"
+  "nobody": "lonelyPage",
+  "stay": "lonelyPage",
+
 };
 
 
@@ -606,6 +644,10 @@ function showMoodPage(pageId) {
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("vibeButton").addEventListener("click", submitSong);
+  document.getElementById("songInput").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    submitSong();}
+  }) 
 });
 
 document.getElementById("easterEggTrigger").addEventListener("click", () => {
