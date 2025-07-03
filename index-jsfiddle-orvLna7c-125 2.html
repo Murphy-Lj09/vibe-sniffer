@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vibe Sniffer 🎧</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
+
+/* === Main Page === */
+body {
+  font-family: 'Quicksand', sans-serif;
+  text-align: center;
+  padding: 2rem;
+  background-color: #f3f4f6;
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#mainPage {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* push content to top */
+  padding-top: 10vh; /* adjust this to control vertical offset */
+  text-align: center;
+}
+
+
+
+.mainCenterBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 12vh; 
+}
+
+
+.input-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+
+input, button {
+  padding: 0.7rem;
+  font-size: 1rem;
+  margin: 1rem;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  background-color: #6c63ff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #5548d9;
+}
+
+#vibeResult {
+  margin-top: 2rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* === Mood Page Overlay === */
+/* Base style for all mood result pages */
+.moodPage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease-in-out;
+  overflow: hidden;
+  padding: 0; /* remove top padding since flex handles centering */
+}
+
+
+.hidden {
+  display: none !important;
+}
+
+/* Floating emoji animation */
+.floating-emoji {
+  position: absolute;
+  font-size: 2.5rem;
+  animation: floatUp 8s linear infinite;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-10vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+
+.moodPage.fade-out {
+  opacity: 0;
+}
+
+.moodPage h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+/* === Floating Emojis === */
+.floating-emoji {
+  position: absolute;
+  font-size: 1.8rem;
+  opacity: 0.5;
+  animation: gentleFloat 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes gentleFloat {
+  0% {
+    transform: translateY(-10vh) translateX(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(100vh) translateX(10px);
+    opacity: 0;
+  }
+}
+
+
+/* Utility */
+.hidden {
+  display: none;
+}
+
+.wave-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wave-svg {
+  width: 300%;
+  height: 100%;
+  animation: scrollWave 45s linear infinite;
+}
+
+.wave {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.wave1 { stroke: #cfcafc; opacity: 0.6; animation-delay: 0s; }
+.wave2 { stroke: #b6b1f0; opacity: 0.5; animation-delay: 2s; }
+.wave3 { stroke: #d7d3ff; opacity: 0.4; animation-delay: 4s; }
+.wave4 { stroke: #e5e2ff; opacity: 0.3; animation-delay: 6s; }
+.wave5 { stroke: #a9a1f2; opacity: 0.6; animation-delay: 8s; }
+.wave6 { stroke: #dfdbff; opacity: 0.2; animation-delay: 18s; }
+.wave7  { stroke: #d9d4ff; opacity: 0.5; animation-delay: 12s; }
+.wave8  { stroke: #e9e6ff; opacity: 0.2; animation-delay: 14s; }
+.wave9  { stroke: #cec9ff; opacity: 0.25; animation-delay: 16s; }
+.wave10 { stroke: #948ace; opacity: 0.45; animation-delay: 10s; }
+.wave11 { stroke: #e6e3ff; opacity: 0.2; animation-delay: 20s; }
+.wave12 { stroke: #dad5ff; opacity: 0.15; animation-delay: 22s; }
+.wave13 { stroke: #d0caff; opacity: 0.2; animation-delay: 24s; }
+.wave14 { stroke: #c8c3f9; opacity: 0.1; animation-delay: 26s; }
+.wave15 { stroke: #eae7ff; opacity: 0.6; animation-delay: 28s; }
+.wave13, .wave14, .wave15 {
+  stroke-width: 3;
+}
+
+
+@keyframes scrollWave {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-20%);
+  }
+}
+#lovePage {
+  background-color: #ffe4ec;
+  color: #b03060;
+}
+
+#sadPage {
+  background-color: #a3c6f1;
+  color: #2d3436;
+}
+
+#hypePage {
+  background-color: #fff4cc;
+  color: #d35400;
+}
+
+#chillPage {
+  background-color: #e8f7f2;
+  color: #2e8b57;
+}
+
+#nostalgiaPage {
+  background-color: #b8b0a1;
+  color: white;
+  font-size: 2rem;
+  font-family: "Courier New", monospace;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.8s ease;
+  overflow: hidden;
+}
+
+/* Fake TV static layer */
+#nostalgiaPage::after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background-image: url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif");
+  background-size: cover;
+  opacity: 0.2;
+  pointer-events: none;
+  animation: glitchMove 2s infinite;
+}
+
+/* Optional glitchy jitter */
+@keyframes glitchMove {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, -2px); }
+  80% { transform: translate(1px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+
+#confidentPage {
+  background-color: #fbe3e8;
+  color: #8e44ad;
+}
+
+#hopefulPage {
+  background-color: #f4f9ff;
+  color: #1e88e5;
+}
+
+#melancholyPage {
+  background-color: #cbd6e2;
+  color: #34495e;
+}
+
+#dreamyPage {
+  background-color: #e5e9ff;
+  color: #6c5ce7;
+}
+
+#lonelyPage {
+  background-color: #f3f1f0;
+  color: #555;
+}
+#returnButton {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #444;
+  z-index: 1000;
+}
+
+#returnButton:hover {
+  color: #111;
+}
+.mainCenterBlock h1 {
+  margin-bottom: 0.4rem;
+  font-size: 2.4rem;
+}
+
+.mainCenterBlock h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.input-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+#vibeResult {
+  margin-top: 1rem;
+}
+
+  </style>
+
+  
+</head>
+<body>
+  <!-- Main Input Page -->
+<div id="mainPage">
+  <div class="mainCenterBlock">
+    <h1>Vibe Sniffer <span id="easterEggTrigger" title="Click me!" style="cursor: pointer;">🎧</span></h1>
+    <h4>What vibe are you in right now?</h4>
+    <div class="input-group">
+      <input id="songInput" placeholder="Enter a song name..." />
+      <button id="vibeButton">Sniff the vibe</button>
+    </div>
+    <p id="vibeResult"></p>
+  </div>
+</div>
+
+
+<!-- Mood Overlays -->
+<div id="lovePage" class="moodPage hidden">
+  💖 You're radiating romantic energy 💖
+</div>
+
+<div id="sadPage" class="moodPage hidden">
+  😢 Feeling the blues... it's okay to feel. 😢
+</div>
+
+<div id="hypePage" class="moodPage hidden">
+  🔥 You’re on fire! Party mode activated. 🔥
+</div>
+
+<div id="chillPage" class="moodPage hidden">
+  🌿 Staying cool and cozy. Chill vibes only. 🌿
+</div>
+
+<div id="nostalgiaPage" class="moodPage hidden">
+  📼 Memory lane unlocked. Old times, warm feels. 📼
+</div>
+
+<div id="confidentPage" class="moodPage hidden">
+  👑 You're unstoppable today. Main character energy. 👑
+</div>
+
+<div id="hopefulPage" class="moodPage hidden">
+  ✨ Keep dreaming — brighter days ahead. ✨
+</div>
+
+<div id="melancholyPage" class="moodPage hidden">
+  🌧️ A soft ache, like rain on glass. 🌧️
+</div>
+
+<div id="dreamyPage" class="moodPage hidden">
+  🌙 Lost in clouds and stars... dreamy mood activated. 🌙
+</div>
+
+<div id="lonelyPage" class="moodPage hidden">
+  🤍 Quiet moments echo loudest. You're not alone. 🤍
+</div>
+
+
+<div class="wave-container">
+  <svg class="wave-svg" viewBox="0 0 1440 480" preserveAspectRatio="none">
+  <path d="M0,40 C360,0 1080,100 1440,40" class="wave wave1" />
+  <path d="M0,80 C360,20 1080,140 1440,80" class="wave wave2" />
+  <path d="M0,120 C360,60 1080,180 1440,120" class="wave wave3" />
+  <path d="M0,160 C360,80 1080,110 1440,80" class="wave wave4" />
+  <path d="M0,200 C360,100 1080,160 1440,160" class="wave wave5" />
+   <path d="M0,240 C360,130 1080,250 1440,200" class="wave wave6" />
+  <path d="M0,280 C360,160 1080,260 1440,220" class="wave wave7" />
+  <path d="M0,320 C360,190 1080,280 1440,240" class="wave wave8" />
+  <path d="M0,360 C360,220 1080,300 1440,260" class="wave wave9" />
+  <path d="M0,400 C360,250 1080,320 1440,280" class="wave wave10" />
+<path d="M0,440 C360,270 1080,360 1440,300" class="wave wave11" />
+<path d="M0,480 C360,300 1080,380 1440,320" class="wave wave12" />
+<path d="M0,520 C360,330 1080,400 1440,340" class="wave wave13" />
+<path d="M0,560 C360,360 1080,420 1440,360" class="wave wave14" />
+<path d="M0,600 C360,390 1080,440 1440,380" class="wave wave15" />
+
+
+</svg>
+</div>
+<!-- Easter Egg Page -->
+<div id="easterEggPage" class="moodPage hidden" style="background-color: #cfe3ff; color: #444; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <h2 style="margin-bottom: 1rem;">🎶 Nothing on your mind?<br>Just enjoy this song with me then.</h2>
+
+  <iframe
+    width="80%" height="200" scrolling="no" frameborder="no" allow="autoplay"
+    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/950674567&color=%23ff5500&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&visual=false"
+    style="border-radius: 12px; margin-bottom: 1.5rem;">
+  </iframe>
+
+  <button id="returnButton" title="Back to Home">⬅</button>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+  <script>
+    // 1. Mood keywords database
+const moodKeywords = {
+  // love
+  "love": "lovePage",
+  "romance": "lovePage",
+  "crush": "lovePage",
+  "affection": "lovePage",
+  "heart": "lovePage",
+  "kiss": "lovePage",
+
+  // sad
+  "heartbreak": "sadPage",
+  "breakup": "sadPage",
+  "cry": "sadPage",
+  "tears": "sadPage",
+  "lonely night": "sadPage",
+  "sad": "sadPage",
+
+  // hype
+  "party": "hypePage",
+  "dance": "hypePage",
+  "lit": "hypePage",
+  "hype": "hypePage",
+  "banger": "hypePage",
+  "turn up": "hypePage",
+
+  // chill
+  "chill": "chillPage",
+  "relax": "chillPage",
+  "cozy": "chillPage",
+  "vibe": "chillPage",
+  "lofi": "chillPage",
+  "soft": "chillPage",
+
+  // nostalgia
+  "nostalgia": "nostalgiaPage",
+  "old times": "nostalgiaPage",
+  "memories": "nostalgiaPage",
+  "retro": "nostalgiaPage",
+  "flashback": "nostalgiaPage",
+
+  // confident
+  "boss": "confidentPage",
+  "power": "confidentPage",
+  "confident": "confidentPage",
+  "unstoppable": "confidentPage",
+  "fearless": "confidentPage",
+
+  // hopeful
+  "hope": "hopefulPage",
+  "brighter day": "hopefulPage",
+  "dream big": "hopefulPage",
+  "believe": "hopefulPage",
+  "shine": "hopefulPage",
+
+  // melancholy
+  "melancholy": "melancholyPage",
+  "gloom": "melancholyPage",
+  "blue feeling": "melancholyPage",
+  "quiet sorrow": "melancholyPage",
+
+  // dreamy
+  "dream": "dreamyPage",
+  "sleepy": "dreamyPage",
+  "floating": "dreamyPage",
+  "cloud": "dreamyPage",
+  "dreamy": "dreamyPage",
+
+  // lonely
+  "lonely": "lonelyPage",
+  "alone": "lonelyPage",
+  "solitude": "lonelyPage",
+  "nobody": "lonelyPage"
+};
+
+
+const moodEmojis = {
+  lovePage: ["💖", "💗", "💞"],
+  sadPage: ["💧"],
+  hypePage: ["🔥", "☀️"],
+  chillPage: ["🌿"],
+  nostalgiaPage: ["📼"],
+  confidentPage: ["👑"],
+  hopefulPage: ["⭐️"],
+  melancholyPage: ["🫧"], // soft bubbles
+  dreamyPage: ["🌙"],
+  lonelyPage: ["💭"]
+};
+
+
+function detectMood(songName) {
+  const lowered = songName.toLowerCase();
+  let matchedPage = null;
+
+  // Sort keywords by length descending to prioritize specific ones
+  const sortedKeywords = Object.keys(moodKeywords).sort((a, b) => b.length - a.length);
+
+  for (const keyword of sortedKeywords) {
+    if (lowered.includes(keyword)) {
+      matchedPage = moodKeywords[keyword];
+      break;
+    }
+  }
+
+  if (matchedPage) {
+    showMoodPage(matchedPage);
+  } else {
+    document.getElementById("vibeResult").textContent =
+      "🎵 Hmm... your vibe is a mystery. Try another one?";
+  }
+}
+
+
+function submitSong() {
+  const songName = document.getElementById("songInput").value;
+  if (songName.trim() === "") {
+    alert("Please enter a song name!");
+    return;
+  }
+  detectMood(songName);
+}
+function addFloatingEmojis(container, emojiChar) {
+  // Clear old ones
+  container.querySelectorAll('.floating-emoji').forEach(e => e.remove());
+
+  let count = 0;
+  const max = 15;
+
+  const emojiInterval = setInterval(() => {
+    const emoji = document.createElement('div');
+    emoji.className = 'floating-emoji';
+    emoji.textContent = emojiChar;
+    emoji.style.left = Math.random() * 100 + 'vw';
+    emoji.style.top = '-10vh';
+    emoji.style.animationDuration = (6 + Math.random() * 4) + 's';
+    container.appendChild(emoji);
+
+    count++;
+    if (count >= max) clearInterval(emojiInterval);
+  }, 300); // one every 0.3s = smoother wave
+}
+
+
+function showMoodPage(pageId) {
+  const moodScreen = document.getElementById(pageId);
+  moodScreen.classList.remove("hidden");
+  moodScreen.classList.remove("fade-out");
+
+  // 🌟 Add floating emojis
+  const emojis = moodEmojis[pageId] || ["🎵"];
+  addFloatingEmojis(moodScreen, emojis[Math.floor(Math.random() * emojis.length)]);
+
+  // ⏳ After 8 seconds, fade out and return to main page
+  setTimeout(() => {
+    moodScreen.classList.add("fade-out");
+    setTimeout(() => {
+      moodScreen.classList.add("hidden");
+      document.getElementById("songInput").value = "";
+      document.getElementById("vibeResult").textContent = "";
+    }, 1000); // fade duration matches CSS transition
+  }, 8000);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("vibeButton").addEventListener("click", submitSong);
+});
+
+document.getElementById("easterEggTrigger").addEventListener("click", () => {
+  const eggPage = document.getElementById("easterEggPage");
+  const audio = document.getElementById("easterEggAudio");
+
+  eggPage.classList.remove("hidden");
+
+  audio.currentTime = 0;
+  audio.play().catch((e) => {
+    console.warn("Autoplay was blocked by browser:", e);
+  });
+
+});
+document.getElementById("returnButton").addEventListener("click", () => {
+  document.getElementById("easterEggPage").classList.add("hidden");
+  document.getElementById("songInput").value = "";
+  document.getElementById("vibeResult").textContent = "";
+});
+
+
+
+  </script>
+</body>
+</html>
